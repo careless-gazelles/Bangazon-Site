@@ -10,7 +10,7 @@ namespace BangazonSite.Models
     public class Order
     {
         [Key]
-        public int OrderId { get; set;
+        public int OrderId { get; set; }
 
         [Required]
         public virtual ApplicationUser User { get; set; }
@@ -19,6 +19,6 @@ namespace BangazonSite.Models
         public int PaymentTypeId { get; set; }
 
         [Display(Name = "PaymentType")]
-        public PaymentType PaymentTypeId { get; set; }
+        public PaymentType PaymentType { get; set; }
     }
 }
