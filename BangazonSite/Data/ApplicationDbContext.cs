@@ -27,7 +27,7 @@ namespace BangazonSite.Data
             modelBuilder.Entity<Product>()
                 .Property(b => b.DateCreated)
                 .HasDefaultValueSql("GETDATE()");
-
+            //app user restrict add note for fluent lang - KC
             modelBuilder.Entity<ApplicationUser>()
                 .HasMany(u => u.Orders)
                 .WithOne(o => o.User)
