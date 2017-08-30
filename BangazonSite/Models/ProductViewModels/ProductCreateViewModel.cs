@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Bangazon.Data;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using BangazonSite.Data;
 
-namespace Bangazon.Models.ProductViewModels
+namespace BangazonSite.Models.ProductViewModels
 {
     public class ProductCreateViewModel
     {

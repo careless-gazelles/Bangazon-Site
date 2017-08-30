@@ -1,4 +1,4 @@
-﻿using Bangazon.Models;
+﻿using BangazonSite.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -20,5 +20,8 @@ namespace BangazonSite.Models
 
         [Display(Name = "PaymentType")]
         public PaymentType PaymentType { get; set; }
+
+        public virtual ICollection<OrderProduct> OrderProducts { get; set; }
+
     }
 }
