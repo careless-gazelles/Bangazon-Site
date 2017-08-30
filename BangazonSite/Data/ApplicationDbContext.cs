@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using BangazonSite.Models;
-using BangazonSite.Models;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace BangazonSite.Data
@@ -17,6 +16,8 @@ namespace BangazonSite.Data
         { }
         public DbSet<Product> Product { get; set; }
         public DbSet<ProductType> ProductType { get; set; }
+        public DbSet<ApplicationUser> ApplicationUser { get; set; }
+        public DbSet<OrderProduct> OrderProduct { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
