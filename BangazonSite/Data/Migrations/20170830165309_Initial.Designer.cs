@@ -8,8 +8,8 @@ using BangazonSite.Data;
 namespace BangazonSite.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20170830141649_NewStuff")]
-    partial class NewStuff
+    [Migration("20170830165309_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
