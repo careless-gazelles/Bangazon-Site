@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using BangazonSite.Models;
-using BangazonSite.Models;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace BangazonSite.Data
