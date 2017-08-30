@@ -17,6 +17,8 @@ namespace BangazonSite.Data
         { }
         public DbSet<Product> Product { get; set; }
         public DbSet<ProductType> ProductType { get; set; }
+        public DbSet<ApplicationUser> ApplicationUser { get; set; }
+        public DbSet<OrderProduct> OrderProduct { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
