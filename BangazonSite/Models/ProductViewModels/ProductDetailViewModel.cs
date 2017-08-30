@@ -1,7 +1,7 @@
-﻿using Bangazon.Models;
-using Bangazon.Data;
+﻿using BangazonSite.Models;
+using BangazonSite.Data;
 
-namespace Bangazon.Models.ProductViewModels
+namespace BangazonSite.Models.ProductViewModels
 {
     public class ProductDetailViewModel
     {

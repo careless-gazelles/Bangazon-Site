@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using BangazonSite.Data;
 using BangazonSite.Models;
 using BangazonSite.Services;
+using BangazonSite.Models;
 
 namespace BangazonSite
 {
@@ -52,6 +53,9 @@ namespace BangazonSite
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
+
+            services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("BangazonSiteContext")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

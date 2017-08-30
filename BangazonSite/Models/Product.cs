@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using BangazonSite.Models;
 
-namespace Bangazon.Models
+namespace BangazonSite.Models
 {
     public class Product
     {
@@ -41,6 +42,10 @@ namespace Bangazon.Models
         [Display(Name = "Category")]
         public ProductType ProductType { get; set; }
 
+        public string ProductLocation { get; set; }
+
+        public string ProductImage { get; set; }
+
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (Price > 10000)
@@ -48,5 +53,7 @@ namespace Bangazon.Models
                 yield return new ValidationResult("Please contact our customer service department to sell something of this value.");
             }
         }
+
+        public virtual ICollection<OrderProduct> OrderProducts { get; set; }
     }
 }

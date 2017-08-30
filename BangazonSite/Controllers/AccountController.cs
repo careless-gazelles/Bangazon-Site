@@ -12,6 +12,7 @@ using Microsoft.Extensions.Options;
 using BangazonSite.Models;
 using BangazonSite.Models.AccountViewModels;
 using BangazonSite.Services;
+using BangazonSite.Models;
 
 namespace BangazonSite.Controllers
 {

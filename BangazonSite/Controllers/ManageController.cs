@@ -10,6 +10,7 @@ using Microsoft.Extensions.Options;
 using BangazonSite.Models;
 using BangazonSite.Models.ManageViewModels;
 using BangazonSite.Services;
+using BangazonSite.Models;
 
 namespace BangazonSite.Controllers
 {
