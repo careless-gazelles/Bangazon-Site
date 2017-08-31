@@ -30,6 +30,11 @@ namespace BangazonSite.Data
                 .WithOne(o => o.User)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<PaymentType>()
+                .Property(b => b.DateCreated)
+                .HasDefaultValueSql("GETDATE()")
+                .ValueGeneratedOnAddOrUpdate();
+
             // Restrict deletion of related order when LineItem entry is removed
             modelBuilder.Entity<Order>()
                 .HasMany(o => o.OrderProducts)
