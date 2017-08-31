@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BangazonSite.Models;
 using BangazonSite.Data;
-using BangazonSite.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace BangazonSite.Controllers
