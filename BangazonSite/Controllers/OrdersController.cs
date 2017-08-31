@@ -16,7 +16,7 @@ namespace BangazonSite.Controllers
 
         public OrdersController(ApplicationDbContext context)
         {
-            _context = context;    
+            _context = context;
         }
 
         // GET: Orders
@@ -25,7 +25,16 @@ namespace BangazonSite.Controllers
             var applicationDbContext = _context.Order.Include(o => o.PaymentType);
             return View(await applicationDbContext.ToListAsync());
         }
+        //KC- Get Open order per customerID
+        //by determining in orders table if this customer has an order without paytype -- Paytype ==null 
+        // bind this product to the orderId, placing this entire instance in the orderProduct Table as a line item.
 
+        public Order custOpenOrder = _context.Order.Single(o => o.OrderId == id)
+            {
+            }
+           
+            
+       
         // GET: Orders/Details/5
         public async Task<IActionResult> Details(int? id)
         {
