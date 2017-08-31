@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using BangazonSite.Models;
 using BangazonSite.Data;
 using BangazonSite.Models;
+using Microsoft.AspNetCore.Identity;
+
+//Author: Adam 
 
 namespace BangazonSite.Controllers
 {
@@ -15,10 +18,15 @@ namespace BangazonSite.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public PaymentTypesController(ApplicationDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public PaymentTypesController(ApplicationDbContext ctx, UserManager<ApplicationUser> userManager)
         {
-            _context = context;    
+            _userManager = userManager;
+            _context = ctx;
         }
+
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
         // GET: PaymentTypes
         public async Task<IActionResult> Index()
@@ -45,8 +53,10 @@ namespace BangazonSite.Controllers
         }
 
         // GET: PaymentTypes/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var user = await GetCurrentUserAsync();
+            ViewData["PaymentTypeId"] = new SelectList(_context.PaymentType, "PaymentTypeId", "Label");
             return View();
         }
 
@@ -55,10 +65,14 @@ namespace BangazonSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PaymentTypeId,DateCreated,Description,AccountNumber")] PaymentType paymentType)
+        public async Task<IActionResult> Create(PaymentType paymentType)
         {
+            ModelState.Remove("User");
+
             if (ModelState.IsValid)
             {
+                var user = await GetCurrentUserAsync();
+                paymentType.User = user;
                 _context.Add(paymentType);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
