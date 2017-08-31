@@ -68,6 +68,7 @@ namespace BangazonSite.Controllers
         public async Task<IActionResult> Create(PaymentType paymentType)
         {
             ModelState.Remove("User");
+            ModelState.Remove("DateCreated");
 
             if (ModelState.IsValid)
             {
