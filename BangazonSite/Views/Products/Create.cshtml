@@ -1,4 +1,4 @@
-@model BangazonSite.Models.Product
+@model BangazonSite.Models.ProductViewModels.ProductCreateViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -12,24 +12,24 @@
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         
         <div class="form-group">
-            <label asp-for="Title" class="col-md-2 control-label"></label>
+            <label asp-for="Product.Title" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
+                <input asp-for="Product.Title" class="form-control" />
+                <span asp-validation-for="Product.Title" class="text-danger"></span>
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="Description" class="col-md-2 control-label"></label>
+            <label asp-for="Product.Description" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
+                <input asp-for="Product.Description" class="form-control" />
+                <span asp-validation-for="Product.Description" class="text-danger"></span>
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="Price" class="col-md-2 control-label"></label>
+            <label asp-for="Product.Price" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
+                <input asp-for="Product.Price" class="form-control" />
+                <span asp-validation-for="Product.Price" class="text-danger"></span>
             </div>
         </div>
         <div class="form-group">
@@ -39,17 +39,17 @@
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="ProductLocation" class="col-md-2 control-label">Location</label>
+            <label asp-for="Product.ProductLocation" class="col-md-2 control-label">Location</label>
             <div class="col-md-10">
-                <input asp-for="ProductLocation" class="form-control" />
-                <span asp-validation-for="ProductLocation" class="text-danger"></span>
+                <input asp-for="Product.ProductLocation" class="form-control" />
+                <span asp-validation-for="Product.ProductLocation" class="text-danger"></span>
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="ProductImage" class="col-md-2 control-label">Image</label>
+            <label asp-for="Product.ProductImage" class="col-md-2 control-label">Image</label>
             <div class="col-md-10">
-                <input asp-for="ProductImage" class="form-control" />
-                <span asp-validation-for="ProductImage" class="text-danger"></span>
+                <input asp-for="Product.ProductImage" class="form-control" />
+                <span asp-validation-for="Product.ProductImage" class="text-danger"></span>
             </div>
         </div>
         <div class="form-group">
