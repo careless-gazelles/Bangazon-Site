@@ -50,12 +50,17 @@ namespace BangazonSite.Controllers
                 _context.Add(orderProduct);
                 //kc- actually add to db
                 await _context.SaveChangesAsync();
-            } if (custOpenOrder == null) {
-                Create();
-            }
+            } if (custOpenOrder == null)
+            {
+                return Create();
+                //Create();
 
-            return View(custOpenOrder);
-              
+                //_context.Create.OrderId();
+
+                //await _context.SaveChangesAsync();
+
+            }  
+                return View(custOpenOrder);
         }
 
 
