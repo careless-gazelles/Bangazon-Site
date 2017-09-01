@@ -116,12 +116,15 @@ namespace BangazonSite.Controllers
             {
                 return NotFound();
             }
-            order.DateCompleted = DateTime.Now;
+
+            ModelState.Remove("User");
+            ModelState.Remove("DateCreated");
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    order.DateCompleted = DateTime.Now;
                     _context.Update(order);
                     await _context.SaveChangesAsync();
                 }
@@ -136,7 +139,7 @@ namespace BangazonSite.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Index");
+                return RedirectToAction("Confirmation",new { id = id});
             }
             ViewData["PaymentTypeId"] = new SelectList(_context.PaymentType, "PaymentTypeId", "AccountNumber", order.PaymentTypeId);
             return View(order);

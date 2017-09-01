@@ -110,7 +110,7 @@ namespace BangazonSite.Controllers
             {
                 return NotFound();
             }
-
+            ModelState.Remove("User");
             if (ModelState.IsValid)
             {
                 try
