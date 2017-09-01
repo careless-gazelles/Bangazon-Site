@@ -34,16 +34,27 @@ namespace BangazonSite.Controllers
             {
                 return NotFound();
             }
+            OrderDetailViewModel orderDetail = new OrderDetailViewModel();
 
             var order = await _context.Order
                 .Include(o => o.PaymentType)
+                .Include(o => o.OrderProducts)
                 .SingleOrDefaultAsync(m => m.OrderId == id);
             if (order == null)
             {
                 return NotFound();
             }
 
-            return View(order);
+            orderDetail.Order = order;
+            orderDetail.Products = (
+                from p in _context.Product
+                join op in order.OrderProducts
+                on p.ProductId equals op.ProductId
+                where op.OrderId == id
+                select p
+                ).ToList();
+
+            return View(orderDetail);
         }
 
         // GET: Orders/Create

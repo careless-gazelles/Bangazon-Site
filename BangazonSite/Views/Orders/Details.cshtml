@@ -7,18 +7,56 @@
 <h2>Details</h2>
 
 <div>
-    <h4>Order</h4>
+    <h4>Order @Html.DisplayFor(model => model.Order.OrderId)</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.PaymentType)
+            @Html.DisplayNameFor(model => model.Order.PaymentType)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.PaymentType.AccountNumber)
+            @Html.DisplayFor(model => model.Order.PaymentType.AccountNumber)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Products)
+        </dt>
+        <dd>
+            <br />
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var product in Model.Products)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(model => product.Title)</td>
+                            <td>quant</td>
+                            <td>@Html.DisplayFor(model => product.Price)</td>
+                        </tr>
+                        Model.Total += product.Price;
+                    }
+                </tbody>
+            </table>
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Total)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Total)
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.OrderId">Edit</a> |
+    @if (Model.Order.PaymentTypeId == null)
+    {
+        <a class="btn btn-primary" asp-action="Complete" asp-route-id="@Model.Order.OrderId">Complete Order</a>
+    }
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Order.OrderId">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
