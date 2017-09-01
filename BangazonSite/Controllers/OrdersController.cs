@@ -116,6 +116,7 @@ namespace BangazonSite.Controllers
             {
                 return NotFound();
             }
+            order.DateCompleted = DateTime.Now;
 
             if (ModelState.IsValid)
             {
@@ -141,8 +142,8 @@ namespace BangazonSite.Controllers
             return View(order);
         }
 
-        // GET: Orders/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: Orders/Confirmation/5
+        public async Task<IActionResult> Confirmation(int? id)
         {
             if (id == null)
             {
