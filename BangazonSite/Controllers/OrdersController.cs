@@ -40,7 +40,7 @@ namespace BangazonSite.Controllers
             int? custOpenOrder = (from order in _context.Order
                                  where order.PaymentTypeId == null && Convert.ToInt32(order.User.Id)== currentUser.Id
                                  select order.OrderId).SingleOrDefault();
-            if (custOpenOrder != null)
+            if (custOpenOrder > 0)
             {
                 OrderProduct orderProduct = new OrderProduct() {
                     OrderId = (int)custOpenOrder,
@@ -50,17 +50,12 @@ namespace BangazonSite.Controllers
                 _context.Add(orderProduct);
                 //kc- actually add to db
                 await _context.SaveChangesAsync();
-            } if (custOpenOrder == null)
+            } if (custOpenOrder < 0)
             {
                 return Create();
-                //Create();
-
-                //_context.Create.OrderId();
-
-                //await _context.SaveChangesAsync();
-
+  
             }  
-                return View(custOpenOrder);
+                return RedirectToRoute("Order", "Index");
         }
 
 
