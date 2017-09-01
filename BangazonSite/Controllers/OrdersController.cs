@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BangazonSite.Data;
 using BangazonSite.Models;
+using BangazonSite.Models.OrderViewModels;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BangazonSite.Controllers
 {
@@ -14,12 +17,16 @@ namespace BangazonSite.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public OrdersController(ApplicationDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public OrdersController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _context = context;    
+            _context = context;
+            _userManager = userManager;
         }
 
         // GET: Orders
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Order.Include(o => o.PaymentType);
@@ -33,16 +40,30 @@ namespace BangazonSite.Controllers
             {
                 return NotFound();
             }
+            OrderDetailViewModel orderDetail = new OrderDetailViewModel();
 
             var order = await _context.Order
                 .Include(o => o.PaymentType)
+                .Include(o => o.OrderProducts)
                 .SingleOrDefaultAsync(m => m.OrderId == id);
             if (order == null)
             {
                 return NotFound();
             }
 
-            return View(order);
+            orderDetail.Order = order;
+
+            // Ollie - 9/1
+            // Get the products that belong to each order
+            orderDetail.Products = (
+                from p in _context.Product
+                join op in order.OrderProducts
+                on p.ProductId equals op.ProductId
+                where op.OrderId == id
+                select p
+                ).ToList();
+
+            return View(orderDetail);
         }
 
         // GET: Orders/Create
@@ -56,6 +77,7 @@ namespace BangazonSite.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("OrderId,PaymentTypeId")] Order order)
         {
@@ -98,10 +120,18 @@ namespace BangazonSite.Controllers
                 return NotFound();
             }
 
+            // Ollie - 9/1 
+            // Apparently the user gets added to the Product object before it's passed here
+            // And the DateCreated was causing issues
+            // This removes them, thus making the ModelState valid
+            ModelState.Remove("User");
+            ModelState.Remove("DateCreated");
+
             if (ModelState.IsValid)
             {
                 try
                 {
+                    order.DateCompleted = DateTime.Now;
                     _context.Update(order);
                     await _context.SaveChangesAsync();
                 }
@@ -116,14 +146,14 @@ namespace BangazonSite.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Index");
+                return RedirectToAction("Confirmation",new { id = id});
             }
             ViewData["PaymentTypeId"] = new SelectList(_context.PaymentType, "PaymentTypeId", "AccountNumber", order.PaymentTypeId);
             return View(order);
         }
 
-        // GET: Orders/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: Orders/Confirmation/5
+        public async Task<IActionResult> Confirmation(int? id)
         {
             if (id == null)
             {
