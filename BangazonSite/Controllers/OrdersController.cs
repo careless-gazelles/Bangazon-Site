@@ -40,8 +40,8 @@ namespace BangazonSite.Controllers
         {
             var currentUser = GetCurrentUserAsync();
             int? custOpenOrder = (from order in _context.Order
-                                 where order.PaymentTypeId == null && Convert.ToInt32(order.User.Id)== currentUser.Id
-                                 select order.OrderId).SingleOrDefault();
+                                  where order.PaymentTypeId == null && Convert.ToInt32(order.User.Id) == currentUser.Id
+                                  select order.OrderId).SingleOrDefault();
             if (custOpenOrder > 0)
             {
                 OrderProduct orderProduct = new OrderProduct() {
@@ -51,12 +51,26 @@ namespace BangazonSite.Controllers
                 //kc-getready to add to db
                 _context.Add(orderProduct);
                 //kc- actually add to db
-                await _context.SaveChangesAsync();
-            } if (custOpenOrder < 0)
+               
+            } if (custOpenOrder == 0)
+            {
+                Order newOrder = new Order
                 {
-                    return Create();
-  
-                }
+                    User = await currentUser
+                };
+                _context.Add(newOrder);
+
+                OrderProduct orderProduct = new OrderProduct()
+                {
+                    OrderId = newOrder.OrderId,
+                    ProductId = productToAdd.ProductId
+                };
+                _context.Add(orderProduct);
+
+            }
+
+            await _context.SaveChangesAsync();
+
             return RedirectToAction("Index");
         }
 
