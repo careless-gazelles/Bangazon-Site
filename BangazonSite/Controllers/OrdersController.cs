@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BangazonSite.Data;
 using BangazonSite.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace BangazonSite.Controllers
 {
@@ -14,10 +15,15 @@ namespace BangazonSite.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public OrdersController(ApplicationDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public OrdersController(ApplicationDbContext ctx, UserManager<ApplicationUser> userManager)
         {
-            _context = context;
+            _userManager = userManager;
+            _context = ctx;
         }
+
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
         // GET: Orders
         public async Task<IActionResult> Index()
@@ -28,13 +34,32 @@ namespace BangazonSite.Controllers
         //KC- Get Open order per customerID
         //by determining in orders table if this customer has an order without paytype -- Paytype ==null 
         // bind this product to the orderId, placing this entire instance in the orderProduct Table as a line item.
-
-        public Order custOpenOrder = _context.Order.Single(o => o.OrderId == id)
+        public async Task<IActionResult> AddProductToOrder(Product productToAdd)
+        {
+            var currentUser = GetCurrentUserAsync();
+            int? custOpenOrder = (from order in _context.Order
+                                 where order.PaymentTypeId == null && Convert.ToInt32(order.User.Id)== currentUser.Id
+                                 select order.OrderId).SingleOrDefault();
+            if (custOpenOrder != null)
             {
+                OrderProduct orderProduct = new OrderProduct() {
+                    OrderId = (int)custOpenOrder,
+                    ProductId = productToAdd.ProductId
+                };
+                //kc-getready to add to db
+                _context.Add(orderProduct);
+                //kc- actually add to db
+                await _context.SaveChangesAsync();
+            } if (custOpenOrder == null) {
+                Create();
             }
-           
-            
-       
+
+            return View(custOpenOrder);
+              
+        }
+
+
+
         // GET: Orders/Details/5
         public async Task<IActionResult> Details(int? id)
         {
