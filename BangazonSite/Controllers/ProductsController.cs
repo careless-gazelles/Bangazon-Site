@@ -53,7 +53,7 @@ namespace BangazonSite.Controllers
         }
 
         // GET: Products/Create
-        public async Task <IActionResult> Create()
+        public IActionResult Create()
         {
             ProductCreateViewModel model = new ProductCreateViewModel(_context);
 
@@ -67,7 +67,7 @@ namespace BangazonSite.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create( ProductCreateViewModel model)
         {
-            ModelState.Remove("product.User");
+            ModelState.Remove("Product.User");
 
             if (ModelState.IsValid)
             {
