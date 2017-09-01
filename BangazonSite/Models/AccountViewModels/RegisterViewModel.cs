@@ -9,16 +9,6 @@ namespace BangazonSite.Models.AccountViewModels
     public class RegisterViewModel
     {
         [Required]
-        public string FirstName { get; set;}
-
-        [Required]
-        public string LastName { get; set; }
-
-        [Required]
-        public string StreetAddress { get; set; }
-
-
-        [Required]
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
@@ -28,6 +18,18 @@ namespace BangazonSite.Models.AccountViewModels
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
         public string Password { get; set; }
+
+        [Required]
+        [Display(Name = "First Name")]
+        public string FirstName { get; set; }
+
+        [Required]
+        [Display(Name = "Last Name")]
+        public string LastName { get; set; }
+
+        [Required]
+        [Display(Name = "Street Address")]
+        public string StreetAddress { get; set; }
 
         [DataType(DataType.Password)]
         [Display(Name = "Confirm password")]

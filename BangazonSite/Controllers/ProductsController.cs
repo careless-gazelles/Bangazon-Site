@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using BangazonSite.Models;
 using BangazonSite.Data;
 using BangazonSite.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace BangazonSite.Controllers
 {
@@ -15,10 +16,15 @@ namespace BangazonSite.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public ProductsController(ApplicationDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public ProductsController(ApplicationDbContext ctx, UserManager<ApplicationUser> userManager)
         {
-            _context = context;    
+            _userManager = userManager;
+            _context = ctx;
         }
+
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
         // GET: Products
         public async Task<IActionResult> Index()
@@ -47,8 +53,10 @@ namespace BangazonSite.Controllers
         }
 
         // GET: Products/Create
-        public IActionResult Create()
+        public async Task <IActionResult> Create()
         {
+            var user = await GetCurrentUserAsync();
+
             ViewData["ProductTypeId"] = new SelectList(_context.ProductType, "ProductTypeId", "Label");
             return View();
         }
@@ -58,10 +66,14 @@ namespace BangazonSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductId,DateCreated,Description,Title,Price,ProductTypeId,ProductLocation,ProductImage")] Product product)
+        public async Task<IActionResult> Create( Product product)
         {
+            ModelState.Remove("User");
+
             if (ModelState.IsValid)
             {
+                var user = await GetCurrentUserAsync();
+                product.User = user;
                 _context.Add(product);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");

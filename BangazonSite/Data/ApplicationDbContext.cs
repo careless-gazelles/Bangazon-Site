@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using BangazonSite.Models;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -33,6 +29,11 @@ namespace BangazonSite.Data
                 .HasMany(u => u.Orders)
                 .WithOne(o => o.User)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<PaymentType>()
+                .Property(b => b.DateCreated)
+                .HasDefaultValueSql("GETDATE()")
+                .ValueGeneratedOnAddOrUpdate();
 
             // Restrict deletion of related order when LineItem entry is removed
             modelBuilder.Entity<Order>()
