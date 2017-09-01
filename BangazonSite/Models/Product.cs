@@ -15,7 +15,6 @@ namespace BangazonSite.Models
         [Required]
         [Range(1, 1000)]
         public int Quantity { get; set; }
-  
 
         [Required]
         [DataType(DataType.Date)]
@@ -40,6 +39,7 @@ namespace BangazonSite.Models
         [Required]
         public int ProductTypeId { get; set; }
 
+        [Required(ErrorMessage = "Please select a category")]
         [Display(Name = "Category")]
         public ProductType ProductType { get; set; }
 
