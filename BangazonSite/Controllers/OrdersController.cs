@@ -52,6 +52,9 @@ namespace BangazonSite.Controllers
             }
 
             orderDetail.Order = order;
+
+            // Ollie - 9/1
+            // Get the products that belong to each order
             orderDetail.Products = (
                 from p in _context.Product
                 join op in order.OrderProducts
@@ -117,6 +120,10 @@ namespace BangazonSite.Controllers
                 return NotFound();
             }
 
+            // Ollie - 9/1 
+            // Apparently the user gets added to the Product object before it's passed here
+            // And the DateCreated was causing issues
+            // This removes them, thus making the ModelState valid
             ModelState.Remove("User");
             ModelState.Remove("DateCreated");
 

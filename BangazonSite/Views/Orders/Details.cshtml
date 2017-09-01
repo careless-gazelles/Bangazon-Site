@@ -25,7 +25,6 @@
                 <thead>
                     <tr>
                         <th>Product</th>
-                        <th>Quantity</th>
                         <th>Price</th>
                     </tr>
                 </thead>
@@ -34,7 +33,6 @@
                     {
                         <tr>
                             <td>@Html.DisplayFor(model => product.Title)</td>
-                            <td>quant</td>
                             <td>@Html.DisplayFor(model => product.Price)</td>
                         </tr>
                         Model.Total += product.Price;
