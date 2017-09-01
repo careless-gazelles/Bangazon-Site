@@ -57,10 +57,6 @@ namespace BangazonSite.Controllers
         {
             ProductCreateViewModel model = new ProductCreateViewModel(_context);
 
-            //Get current user
-            var user = await GetCurrentUserAsync();
-
-            ViewData["ProductTypeId"] = new SelectList(_context.ProductType, "ProductTypeId", "Label");
             return View(model);
         }
 
@@ -71,17 +67,17 @@ namespace BangazonSite.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create( ProductCreateViewModel model)
         {
-            ModelState.Remove("User");
+            ModelState.Remove("product.User");
 
             if (ModelState.IsValid)
             {
                 var user = await GetCurrentUserAsync();
-                model.User = user;
-                _context.Add(model);
+                model.Product.User = user;
+                _context.Add(model.Product);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewData["ProductTypeId"] = new SelectList(_context.ProductType, "ProductTypeId", "Label",  model.ProductTypeId);
+            
             return View(model);
         }
 
@@ -98,7 +94,7 @@ namespace BangazonSite.Controllers
             {
                 return NotFound();
             }
-            ViewData["ProductTypeId"] = new SelectList(_context.ProductType, "ProductTypeId", "Label", product.ProductTypeId);
+            
             return View(product);
         }
 
@@ -134,7 +130,7 @@ namespace BangazonSite.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            ViewData["ProductTypeId"] = new SelectList(_context.ProductType, "ProductTypeId", "Label", product.ProductTypeId);
+            
             return View(product);
         }
 
