@@ -36,7 +36,7 @@ namespace BangazonSite.Controllers
                 products = products.Where(p => p.Title.Contains(searchString)
                                        || p.Description.Contains(searchString));
             }
-            
+
             return View(products.ToList());
         }
 
