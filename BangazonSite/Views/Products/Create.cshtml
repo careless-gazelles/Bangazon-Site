@@ -4,25 +4,25 @@
     ViewData["Title"] = "Create";
 }
 
-<h2>Create</h2>
+<h2>Sell a Product</h2>
 
 <form asp-action="Create">
     <div class="form-horizontal">
-        <h4>Product</h4>
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-group">
-            <label asp-for="Description" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-        </div>
+        
         <div class="form-group">
             <label asp-for="Title" class="col-md-2 control-label"></label>
             <div class="col-md-10">
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Description" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
             </div>
         </div>
         <div class="form-group">
@@ -33,20 +33,20 @@
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="ProductTypeId" class="col-md-2 control-label"></label>
+            <label asp-for="ProductTypeId" class="col-md-2 control-label">Category</label>
             <div class="col-md-10">
                 <select asp-for="ProductTypeId" class ="form-control" asp-items="ViewBag.ProductTypeId"></select>
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="ProductLocation" class="col-md-2 control-label"></label>
+            <label asp-for="ProductLocation" class="col-md-2 control-label">Location</label>
             <div class="col-md-10">
                 <input asp-for="ProductLocation" class="form-control" />
                 <span asp-validation-for="ProductLocation" class="text-danger"></span>
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="ProductImage" class="col-md-2 control-label"></label>
+            <label asp-for="ProductImage" class="col-md-2 control-label">Image</label>
             <div class="col-md-10">
                 <input asp-for="ProductImage" class="form-control" />
                 <span asp-validation-for="ProductImage" class="text-danger"></span>
@@ -54,7 +54,7 @@
         </div>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Create" class="btn btn-default" /> 
             </div>
         </div>
     </div>
