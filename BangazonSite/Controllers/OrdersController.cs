@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BangazonSite.Data;
 using BangazonSite.Models;
+using BangazonSite.Models.OrderViewModels;
 
 namespace BangazonSite.Controllers
 {
