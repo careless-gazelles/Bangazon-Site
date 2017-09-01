@@ -196,6 +196,14 @@ namespace BangazonSite.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var order = await _context.Order.SingleOrDefaultAsync(m => m.OrderId == id);
+
+            List<OrderProduct> orderProducts = await _context.OrderProduct.Where(x => x.OrderId == id).ToListAsync();
+
+            foreach (var op in orderProducts)
+            {
+                _context.OrderProduct.Remove(op);
+            }
+
             _context.Order.Remove(order);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");

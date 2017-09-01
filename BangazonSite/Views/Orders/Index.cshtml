@@ -34,6 +34,11 @@
             </td>
             <td>
                 <a asp-action="Details" asp-route-id="@item.OrderId">Details</a>
+                @if(item.PaymentTypeId == null)
+                {
+                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.OrderId">Delete</a>
+                }
+                
             </td>
         </tr>
 }
