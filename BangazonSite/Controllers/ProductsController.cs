@@ -7,8 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BangazonSite.Models;
 using BangazonSite.Data;
-using BangazonSite.Models;
 using Microsoft.AspNetCore.Identity;
+using BangazonSite.Models.ProductViewModels;
 
 namespace BangazonSite.Controllers
 {
@@ -53,12 +53,11 @@ namespace BangazonSite.Controllers
         }
 
         // GET: Products/Create
-        public async Task <IActionResult> Create()
+        public IActionResult Create()
         {
-            var user = await GetCurrentUserAsync();
+            ProductCreateViewModel model = new ProductCreateViewModel(_context);
 
-            ViewData["ProductTypeId"] = new SelectList(_context.ProductType, "ProductTypeId", "Label");
-            return View();
+            return View(model);
         }
 
         // POST: Products/Create
@@ -66,20 +65,20 @@ namespace BangazonSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create( Product product)
+        public async Task<IActionResult> Create( ProductCreateViewModel model)
         {
-            ModelState.Remove("User");
+            ModelState.Remove("Product.User");
 
             if (ModelState.IsValid)
             {
                 var user = await GetCurrentUserAsync();
-                product.User = user;
-                _context.Add(product);
+                model.Product.User = user;
+                _context.Add(model.Product);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewData["ProductTypeId"] = new SelectList(_context.ProductType, "ProductTypeId", "Label", product.ProductTypeId);
-            return View(product);
+            
+            return View(model);
         }
 
         // GET: Products/Edit/5
@@ -95,7 +94,7 @@ namespace BangazonSite.Controllers
             {
                 return NotFound();
             }
-            ViewData["ProductTypeId"] = new SelectList(_context.ProductType, "ProductTypeId", "Label", product.ProductTypeId);
+            
             return View(product);
         }
 
@@ -136,7 +135,7 @@ namespace BangazonSite.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            ViewData["ProductTypeId"] = new SelectList(_context.ProductType, "ProductTypeId", "Label", product.ProductTypeId);
+            
             return View(product);
         }
 
