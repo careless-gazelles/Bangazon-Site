@@ -36,10 +36,10 @@ namespace BangazonSite.Models
         [Required]
         public virtual ApplicationUser User { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Please select a category")]
         public int ProductTypeId { get; set; }
 
-        [Required(ErrorMessage = "Please select a category")]
+        [Required]
         [Display(Name = "Category")]
         public ProductType ProductType { get; set; }
 
