@@ -39,7 +39,7 @@
                     @using (Html.BeginForm())
                     {
                             @Html.TextBox("SearchString")
-                            <input type="submit" value="Search" />
+                            <input asp-area="" asp-controller="Products" asp-action="Index" type="submit" value="Search" />
                     }
                     </li>
                 </ul>
