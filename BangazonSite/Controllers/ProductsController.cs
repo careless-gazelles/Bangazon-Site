@@ -27,10 +27,24 @@ namespace BangazonSite.Controllers
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
         // GET: Products
-        public async Task<IActionResult> Index()
+        //public async Task<IActionResult> Index()
+        //{
+            //var applicationDbContext = _context.Product.Include(p => p.ProductType);
+            //return View(await applicationDbContext.ToListAsync());
+        //}
+
+        public ViewResult Index(string searchString)
         {
-            var applicationDbContext = _context.Product.Include(p => p.ProductType);
-            return View(await applicationDbContext.ToListAsync());
+            var products = from p in _context.Product
+                           select p;
+            
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                products = products.Where(p => p.Title.Contains(searchString)
+                                       || p.Description.Contains(searchString));
+            }
+            
+            return View(products.ToList());
         }
 
         // GET: Products/Details/5
