@@ -12,9 +12,10 @@ namespace BangazonSite.Models
         [Key]
         public int ProductId { get; set; }
 
-        [NotMapped]
+        [Required]
+        [Range(1, 1000)]
         public int Quantity { get; set; }
-
+  
 
         [Required]
         [DataType(DataType.Date)]
