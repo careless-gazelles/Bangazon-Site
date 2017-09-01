@@ -8,9 +8,10 @@ using BangazonSite.Data;
 namespace BangazonSite.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170830210518_NullablePTDate")]
+    partial class NullablePTDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
@@ -79,12 +80,6 @@ namespace BangazonSite.Data.Migrations
                 {
                     b.Property<int>("OrderId")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime?>("DateCompleted");
-
-                    b.Property<DateTime?>("DateCreated")
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate();
 
                     b.Property<int?>("PaymentTypeId");
 
