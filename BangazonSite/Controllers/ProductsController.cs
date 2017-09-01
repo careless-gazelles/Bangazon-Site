@@ -110,6 +110,11 @@ namespace BangazonSite.Controllers
                 return NotFound();
             }
 
+            // Ollie - 9/1 
+            // Apparently the user gets added to the Product object before it's passed here
+            // This removes it, thus making the ModelState valid
+            ModelState.Remove("User");
+
             if (ModelState.IsValid)
             {
                 try
