@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using BangazonSite.Data;
 using BangazonSite.Models;
 using BangazonSite.Models.OrderViewModels;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BangazonSite.Controllers
 {
@@ -15,12 +17,16 @@ namespace BangazonSite.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public OrdersController(ApplicationDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public OrdersController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _context = context;    
+            _context = context;
+            _userManager = userManager;
         }
 
         // GET: Orders
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Order.Include(o => o.PaymentType);
@@ -68,6 +74,7 @@ namespace BangazonSite.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("OrderId,PaymentTypeId")] Order order)
         {

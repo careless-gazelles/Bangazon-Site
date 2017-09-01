@@ -53,10 +53,9 @@
 <div>
     @if (Model.Order.PaymentTypeId == null)
     {
-        <a class="btn btn-primary" asp-action="Complete" asp-route-id="@Model.Order.OrderId">Complete Order</a>
+        <a class="btn btn-primary" asp-action="Edit" asp-route-id="@Model.Order.OrderId">Complete Order</a>
     }
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Order.OrderId">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
