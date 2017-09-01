@@ -9,6 +9,8 @@ namespace BangazonSite.Models.ProductViewModels
     {
         public List<SelectListItem> ProductTypeId { get; set; }
         public Product Product { get; set; }
+        public ApplicationUser User { get; internal set; }
+
         public ProductCreateViewModel(ApplicationDbContext ctx)
         {
             // Creating SelectListItems will be used in a @Html.DropDownList
