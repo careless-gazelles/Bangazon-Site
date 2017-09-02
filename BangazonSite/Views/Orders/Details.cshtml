@@ -42,7 +42,7 @@
                             @if(Model.Order.PaymentTypeId == null)
                             {
                                 <td>
-                                    <a>Delete</a>
+                                    <a class="btn btn-default btn-sm" asp-action="Delete" asp-route-id="@Model.Order.OrderId" asp-route-param="@product.ProductId">Delete</a>
                                 </td>
 
                             }
