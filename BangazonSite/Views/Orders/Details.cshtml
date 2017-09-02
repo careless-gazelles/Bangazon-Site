@@ -26,6 +26,11 @@
                     <tr>
                         <th>Product</th>
                         <th>Price</th>
+                        @if(Model.Order.PaymentTypeId == null)
+                        {
+                            <th></th>
+
+                        }
                     </tr>
                 </thead>
                 <tbody>
@@ -34,6 +39,13 @@
                         <tr>
                             <td>@Html.DisplayFor(model => product.Title)</td>
                             <td>@Html.DisplayFor(model => product.Price)</td>
+                            @if(Model.Order.PaymentTypeId == null)
+                            {
+                                <td>
+                                    <a>Delete</a>
+                                </td>
+
+                            }
                         </tr>
                         Model.Total += product.Price;
                     }
