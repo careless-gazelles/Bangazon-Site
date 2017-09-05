@@ -66,6 +66,26 @@ namespace BangazonSite.Controllers
             return View(orderDetail);
         }
 
+        // POST: Orders/Details/5?param=5
+        [HttpPost, ActionName("Details")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteProductConfirmed(int id, int param)
+        {
+            //var order = await _context.Order.SingleOrDefaultAsync(m => m.OrderId == id);
+
+            List<OrderProduct> orderProducts = await _context.OrderProduct.Where(x => x.OrderId == id && x.ProductId == param).ToListAsync();
+
+            foreach (var op in orderProducts)
+            {
+                _context.OrderProduct.Remove(op);
+            }
+
+            // _context.Order.Remove(order);
+            await _context.SaveChangesAsync();
+            //return RedirectToAction("Index");
+            return RedirectToAction("Details", new { id = id });
+        }
+
         // GET: Orders/Create
         public IActionResult Create()
         {
@@ -295,26 +315,6 @@ namespace BangazonSite.Controllers
                 ).ToList();
 
             return View(orderDetail);
-        }
-
-        // POST: Orders/DeleteProduct/5?param=5
-        [HttpPost, ActionName("DeleteProduct")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteProductConfirmed(int id, int param)
-        {
-            //var order = await _context.Order.SingleOrDefaultAsync(m => m.OrderId == id);
-
-            List<OrderProduct> orderProducts = await _context.OrderProduct.Where(x => x.OrderId == id && x.ProductId == param).ToListAsync();
-
-             foreach (var op in orderProducts)
-             {
-                 _context.OrderProduct.Remove(op);
-             }
-
-            // _context.Order.Remove(order);
-            await _context.SaveChangesAsync();
-            //return RedirectToAction("Index");
-            return RedirectToAction("Details", new { id = id });
         }
 
         private bool OrderExists(int id)
