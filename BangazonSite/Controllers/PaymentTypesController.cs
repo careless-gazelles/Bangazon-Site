@@ -150,18 +150,24 @@ namespace BangazonSite.Controllers
         }
 
         // POST: PaymentTypes/Delete/5
+        //Worked on by Joey - 9.5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var paymentType = await _context.PaymentType.SingleOrDefaultAsync(m => m.PaymentTypeId == id);
-            if (paymentType != null)
+            var paymentTypeUsed = await _context.Order.SingleOrDefaultAsync(o => o.PaymentType == paymentType);
+
+            if (paymentTypeUsed == null)
             {
-               
+                _context.PaymentType.Remove(paymentType);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index");
             }
-            _context.PaymentType.Remove(paymentType);
-            await _context.SaveChangesAsync();
+
+            paymentType.IsActive = false;
             return RedirectToAction("Index");
+
         }
 
         private bool PaymentTypeExists(int id)
