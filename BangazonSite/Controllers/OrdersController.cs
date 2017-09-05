@@ -230,7 +230,10 @@ namespace BangazonSite.Controllers
             // And the DateCreated was causing issues
             // This removes them, thus making the ModelState valid
             ModelState.Remove("order.User");
-            ModelState.Remove("order.DateCreated");
+            //ModelState.Remove("order.DateCreated");
+
+            //order.DateCreated = order.DateCreated;
+            order.DateCompleted = DateTime.Now;
 
             orderDetail.Order = order;
 

@@ -21,7 +21,7 @@ namespace BangazonSite.Models
         [Display(Name = "PaymentType")]
         public PaymentType PaymentType { get; set; }
 
-        public DateTime? DateCreated { get; set; }
+        public DateTime DateCreated { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime? DateCompleted { get; set; }
