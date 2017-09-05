@@ -1,0 +1,54 @@
+﻿@model BangazonSite.Models.OrderViewModels.OrderDetailViewModel
+
+@{
+    ViewData["Title"] = "Delete Products";
+}
+<h2>Henlo</h2>
+<p>@Html.DisplayFor(model => model.Order.OrderId)</p>
+<form asp-action="Details">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                @if (Model.Order.PaymentTypeId == null)
+            {
+                    <th></th>
+
+                }
+            </tr>
+        </thead>
+        <tbody>
+            <!--Pass the Value of the product (the actual info stored in it) and the Index of it in the Product List-->
+            @foreach (var product in Model.Products.Select((value, index) => new { Value = value, Index = index }))
+            {
+                // Counts the number of times this order/product combo is in the OrderProduct Table
+                int quant = (product.Value.OrderProducts.Select(op => op).Count());
+                // Multiply product price by quant for product total
+                var price = (product.Value.Price * quant).ToString("C");
+
+                // Compare the index of the first occurrence of the Product to the current Index.
+                // ONLY if the indexes matchup will a new line item print to DOM
+                if (Model.Products.IndexOf(product.Value) == product.Index)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(model => product.Value.Title)</td>
+                        <td>@quant</td>
+                        <td>@price</td>
+                        @if (Model.Order.PaymentTypeId == null)
+                    {
+                            <td>
+                                <input class="btn btn-default btn-sm" type="submit" value="Delete" asp-route-param="@product.Value.ProductId">
+                            </td>
+
+                        }
+                    </tr>
+
+                }
+
+                Model.Total += product.Value.Price;
+            }
+        </tbody>
+    </table>
+</form>
