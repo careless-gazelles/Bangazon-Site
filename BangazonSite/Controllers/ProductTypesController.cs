@@ -62,7 +62,7 @@ namespace BangazonSite.Controllers
                 return NotFound();
             }
 
-            return View(ProductType);
+            return View(productType);
         }
 
         // GET: ProductTypes/Create
