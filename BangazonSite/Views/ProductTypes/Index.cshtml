@@ -18,6 +18,19 @@
             <th></th>
         </tr>
     </thead>
+
+    @foreach (var type in (IEnumerable<object>)ViewBag["types"])
+    {
+        @type
+        <div class="row top-buffer">
+            <div class="col-md-8">@type.ProductType</div>
+            <div class="col-md-2">@type.ProductCount</div>
+            <div class="col-md-2">
+            </div>
+        </div>
+    }
+
+
     <tbody>
 @foreach (var item in Model) {
         <tr>
