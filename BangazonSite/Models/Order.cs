@@ -21,9 +21,6 @@ namespace BangazonSite.Models
         [Display(Name = "PaymentType")]
         public PaymentType PaymentType { get; set; }
 
-        [Required]
-        [DataType(DataType.Date)]
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime? DateCreated { get; set; }
 
         [DataType(DataType.Date)]
