@@ -26,6 +26,7 @@ namespace BangazonSite.Controllers
 
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
+        //Logic for searching for products
         public ViewResult Index(string searchString)
         {
             var products = from p in _context.Product
