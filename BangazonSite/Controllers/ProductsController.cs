@@ -27,16 +27,18 @@ namespace BangazonSite.Controllers
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
         //Logic for searching for products
-        public ViewResult Index(string searchString, bool LocalDelivery)
+        public async Task<IActionResult> Index(string searchString, bool LocalDelivery)
         {
             var products = from p in _context.Product
                            select p;
+
+            var id = await GetCurrentUserAsync();
 
             if (LocalDelivery == true)
             {
                 if (!String.IsNullOrEmpty(searchString))
                 {
-                    products = products.Where(p => p.ProductLocation.Contains(searchString));
+                    products = products.Where(p => p.ProductLocation.Contains(searchString) && p.User != id);
                 }
             }
 
@@ -45,7 +47,7 @@ namespace BangazonSite.Controllers
                 if (!String.IsNullOrEmpty(searchString))
                 {
                     products = products.Where(p => p.Title.Contains(searchString)
-                                           || p.Description.Contains(searchString));
+                                           || p.Description.Contains(searchString) && p.User != id);
                 }
             }
 
