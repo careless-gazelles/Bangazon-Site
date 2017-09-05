@@ -27,15 +27,26 @@ namespace BangazonSite.Controllers
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
         //Logic for searching for products
-        public ViewResult Index(string searchString)
+        public ViewResult Index(string searchString, bool localSearch)
         {
             var products = from p in _context.Product
                            select p;
-            
-            if (!String.IsNullOrEmpty(searchString))
+
+            if (localSearch == true)
             {
-                products = products.Where(p => p.Title.Contains(searchString)
-                                       || p.Description.Contains(searchString));
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    products = products.Where(p => p.ProductLocation.Contains(searchString));
+                }
+            }
+
+            else
+            {
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    products = products.Where(p => p.Title.Contains(searchString)
+                                           || p.Description.Contains(searchString));
+                }
             }
 
             return View(products.ToList());

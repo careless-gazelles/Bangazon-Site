@@ -41,6 +41,8 @@
                     @using (Html.BeginForm())
                     {
                             @Html.TextBox("SearchString")
+                            <p style="display:inline; color:lightgrey">Search by location</p>
+                            <input asp-area="" asp-controller="Products" asp-action="Index" type="checkbox" value="true" />
                             <input asp-area="" asp-controller="Products" asp-action="Index" type="submit" value="Search" />
                     }
                     </li>
