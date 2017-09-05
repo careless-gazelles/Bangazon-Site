@@ -239,25 +239,6 @@ namespace BangazonSite.Controllers
                 return NotFound();
             }
 
-            var order = await _context.Order
-                .Include(o => o.PaymentType)
-                .SingleOrDefaultAsync(m => m.OrderId == id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-
-            return View(order);
-        }
-
-        // GET: Orders/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             OrderDetailViewModel orderDetail = new OrderDetailViewModel();
 
             var order = await _context.Order
