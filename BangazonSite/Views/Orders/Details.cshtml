@@ -25,6 +25,7 @@
                 <thead>
                     <tr>
                         <th>Product</th>
+                        <th>Quantity</th>
                         <th>Price</th>
                         @if(Model.Order.PaymentTypeId == null)
                         {
@@ -34,20 +35,34 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var product in Model.Products)
+                    @foreach (var product in Model.Products.Select((value, index) => new { Value = value, Index = index }))
                     {
-                        <tr>
-                            <td>@Html.DisplayFor(model => product.Title)</td>
-                            <td>@Html.DisplayFor(model => product.Price)</td>
-                            @if(Model.Order.PaymentTypeId == null)
-                            {
-                                <td>
-                                    <a class="btn btn-default btn-sm" asp-action="Delete" asp-route-id="@Model.Order.OrderId" asp-route-param="@product.ProductId">Delete</a>
-                                </td>
+                        int quant = (product.Value.OrderProducts.Select(op => op).Count());
+                        var price = (product.Value.Price * quant).ToString("C");
 
-                            }
-                        </tr>
-                        Model.Total += product.Price;
+                        if (Model.Products.IndexOf(product.Value) == product.Index)
+                        {
+                            <tr>
+                                <td>@Html.DisplayFor(model => product.Value.Title)</td>
+                                <td>@quant</td>
+                                <td>@price</td>
+                                @if (Model.Order.PaymentTypeId == null)
+                                {
+                                    <td>
+                                        <a class="btn btn-default btn-sm" asp-action="Delete" asp-route-id="@Model.Order.OrderId" asp-route-param="@product.Value.ProductId">Delete</a>
+                                    </td>
+
+                                }
+                            </tr>
+
+                        }
+                        else
+                        {
+                            quant++;
+
+                        }
+
+                        Model.Total += product.Value.Price;
                     }
                 </tbody>
             </table>
