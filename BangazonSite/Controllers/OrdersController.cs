@@ -77,8 +77,6 @@ namespace BangazonSite.Controllers
             return RedirectToAction("Index");
         }
 
-
-
         // GET: Orders/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -107,23 +105,23 @@ namespace BangazonSite.Controllers
             return View(currentOrderModel);
         }
 
+        // Ollie 9/5
+        // Delete Product from cart
+        // Id = OrderId
+        // Param = ProductId
         // POST: Orders/Details/5?param=5
         [HttpPost, ActionName("Details")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteProductConfirmed(int id, int param)
         {
-            //var order = await _context.Order.SingleOrDefaultAsync(m => m.OrderId == id);
-
             List<OrderProduct> orderProducts = await _context.OrderProduct.Where(x => x.OrderId == id && x.ProductId == param).ToListAsync();
 
             foreach (var op in orderProducts)
             {
                 _context.OrderProduct.Remove(op);
             }
-
-            // _context.Order.Remove(order);
+            
             await _context.SaveChangesAsync();
-            //return RedirectToAction("Index");
             return RedirectToAction("Details", new { id = id });
         }
 
