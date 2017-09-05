@@ -21,7 +21,7 @@
         </dt>
         <dd>
             <br />
-            <table>
+            <table class="table">
                 <thead>
                     <tr>
                         <th>Product</th>
@@ -54,7 +54,7 @@
                                 @if (Model.Order.PaymentTypeId == null)
                                 {
                                     <td>
-                                        <a class="btn btn-default btn-sm" asp-action="Delete" asp-route-id="@Model.Order.OrderId" asp-route-param="@product.Value.ProductId">Delete</a>
+                                        <a class="btn btn-default btn-sm" asp-action="DeleteProduct" asp-route-id="@Model.Order.OrderId" asp-route-param="@product.Value.ProductId">Delete</a>
                                     </td>
 
                                 }

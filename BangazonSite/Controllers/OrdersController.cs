@@ -263,6 +263,60 @@ namespace BangazonSite.Controllers
             return RedirectToAction("Index");
         }
 
+        // GET: Orders/DeleteProduct/5?param=5
+        public async Task<IActionResult> DeleteProduct(int? id, int? param)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            OrderDetailViewModel orderDetail = new OrderDetailViewModel();
+
+            var order = await _context.Order
+                .Include(o => o.PaymentType)
+                .Include(o => o.OrderProducts)
+                .SingleOrDefaultAsync(m => m.OrderId == id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            orderDetail.Order = order;
+
+            // Ollie - 9/1
+            // Get the products that belong to each order
+            orderDetail.Products = (
+                from p in _context.Product
+                join op in order.OrderProducts
+                on p.ProductId equals op.ProductId
+                where op.OrderId == id && p.ProductId == param
+                select p
+                ).ToList();
+
+            return View(orderDetail);
+        }
+
+        // POST: Orders/DeleteProduct/5?param=5
+        [HttpPost, ActionName("DeleteProduct")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteProductConfirmed(int id, int param)
+        {
+            //var order = await _context.Order.SingleOrDefaultAsync(m => m.OrderId == id);
+
+            List<OrderProduct> orderProducts = await _context.OrderProduct.Where(x => x.OrderId == id && x.ProductId == param).ToListAsync();
+
+             foreach (var op in orderProducts)
+             {
+                 _context.OrderProduct.Remove(op);
+             }
+
+            // _context.Order.Remove(order);
+            await _context.SaveChangesAsync();
+            //return RedirectToAction("Index");
+            return RedirectToAction("Details", new { id = id });
+        }
+
         private bool OrderExists(int id)
         {
             return _context.Order.Any(e => e.OrderId == id);
