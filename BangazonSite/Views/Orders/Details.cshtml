@@ -35,11 +35,16 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <!--Pass the Value of the product (the actual info stored in it) and the Index of it in the Product List-->
                     @foreach (var product in Model.Products.Select((value, index) => new { Value = value, Index = index }))
                     {
+                        // Counts the number of times this order/product combo is in the OrderProduct Table
                         int quant = (product.Value.OrderProducts.Select(op => op).Count());
+                        // Multiply product price by quant for product total
                         var price = (product.Value.Price * quant).ToString("C");
 
+                        // Compare the index of the first occurrence of the Product to the current Index.
+                        // ONLY if the indexes matchup will a new line item print to DOM
                         if (Model.Products.IndexOf(product.Value) == product.Index)
                         {
                             <tr>
@@ -54,11 +59,6 @@
 
                                 }
                             </tr>
-
-                        }
-                        else
-                        {
-                            quant++;
 
                         }
 
