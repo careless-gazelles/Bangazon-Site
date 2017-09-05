@@ -210,12 +210,54 @@ namespace BangazonSite.Controllers
             return View(order);
         }
 
+        // GET: Orders/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            OrderDetailViewModel orderDetail = new OrderDetailViewModel();
+
+            var order = await _context.Order
+                .Include(o => o.PaymentType)
+                .Include(o => o.OrderProducts)
+                .SingleOrDefaultAsync(m => m.OrderId == id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            orderDetail.Order = order;
+
+            // Ollie - 9/1
+            // Get the products that belong to each order
+            orderDetail.Products = (
+                from p in _context.Product
+                join op in order.OrderProducts
+                on p.ProductId equals op.ProductId
+                where op.OrderId == id
+                select p
+                ).ToList();
+
+            return View(orderDetail);
+        }
+
         // POST: Orders/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var order = await _context.Order.SingleOrDefaultAsync(m => m.OrderId == id);
+
+            List<OrderProduct> orderProducts = await _context.OrderProduct.Where(x => x.OrderId == id).ToListAsync();
+
+            foreach (var op in orderProducts)
+            {
+                _context.OrderProduct.Remove(op);
+            }
+
             _context.Order.Remove(order);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
