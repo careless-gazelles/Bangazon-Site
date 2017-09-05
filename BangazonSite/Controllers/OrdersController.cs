@@ -231,24 +231,7 @@ namespace BangazonSite.Controllers
             return View(orderDetail);
         }
 
-        // GET: Orders/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var order = await _context.Order
-                .Include(o => o.PaymentType)
-                .SingleOrDefaultAsync(m => m.OrderId == id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-
-            return View(order);
-        }
 
         // GET: Orders/Delete/5
         public async Task<IActionResult> Delete(int? id)
