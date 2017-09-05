@@ -21,7 +21,7 @@
         </dt>
         <dd>
             <br />
-            <table>
+            <table class="table">
                 <thead>
                     <tr>
                         <th>Product</th>
@@ -52,6 +52,7 @@
     @if (Model.Order.PaymentTypeId == null)
     {
         <a class="btn btn-primary" asp-action="Edit" asp-route-id="@Model.Order.OrderId">Complete Order</a>
+        <a class="btn btn-danger" asp-action="Delete" asp-route-id="@Model.Order.OrderId">Delete</a>
     }
 </div>
 <div>
