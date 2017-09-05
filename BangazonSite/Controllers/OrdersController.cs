@@ -231,7 +231,6 @@ namespace BangazonSite.Controllers
             return View(orderDetail);
         }
 
- 
         // GET: Orders/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
