@@ -156,9 +156,9 @@ namespace BangazonSite.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var paymentType = await _context.PaymentType.SingleOrDefaultAsync(m => m.PaymentTypeId == id);
-            var paymentTypeUsed = await _context.Order.SingleOrDefaultAsync(o => o.PaymentType == paymentType);
+            var paymentTypeUsed =  _context.Order.Any(o => o.PaymentTypeId == id);
 
-            if (paymentTypeUsed == null)
+            if (!paymentTypeUsed)
             {
                 _context.PaymentType.Remove(paymentType);
                 await _context.SaveChangesAsync();

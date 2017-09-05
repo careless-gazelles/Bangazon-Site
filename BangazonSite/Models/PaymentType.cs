@@ -11,6 +11,12 @@ namespace BangazonSite.Models
         [Key]
         public int PaymentTypeId { get; set; }
 
+        public PaymentType() {
+            IsActive = true;
+        }
+
+        public bool IsActive { get; set; }
+
         [Required]
         [DataType(DataType.Date)]
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
