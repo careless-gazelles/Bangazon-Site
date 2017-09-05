@@ -22,10 +22,11 @@ namespace BangazonSite.Controllers
 
         // GET: ProductTypes
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            // Add the grouped products, by product type, to the ViewBag
-            ViewBag["types"] = from t in _context.ProductType
+      
+        // Add the grouped products, by product type, to the ViewBag
+        ViewBag["types"] = from t in _context.ProductType
                                join p in _context.Product
                                on t.ProductTypeId equals p.ProductTypeId
                                group new { t, p } by new { t.Label } into grouped
@@ -48,16 +49,12 @@ namespace BangazonSite.Controllers
 
             var productType = await _context.ProductType
                 .SingleOrDefaultAsync(m => m.ProductTypeId == id);
-            var products = _context.Product.Where(m => m.ProductTypeId == id);
-            var ProductTypeView = new ProductTypeDetailViewModel();
-            ProductTypeView.ProductType = productType;
-            ProductTypeView.Products = products.ToList();
             if (productType == null)
             {
                 return NotFound();
             }
 
-            return View(ProductTypeView);
+            return View(ProductType);
         }
 
         // GET: ProductTypes/Create
