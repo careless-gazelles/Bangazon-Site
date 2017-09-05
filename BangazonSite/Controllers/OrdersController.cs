@@ -7,9 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BangazonSite.Data;
 using BangazonSite.Models;
-using BangazonSite.Models.OrderViewModels;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authorization;
+using BangazonSite.Models.OrderViewModels;
 
 namespace BangazonSite.Controllers
 {
@@ -19,51 +18,93 @@ namespace BangazonSite.Controllers
 
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public OrdersController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public OrdersController(ApplicationDbContext ctx, UserManager<ApplicationUser> userManager)
         {
-            _context = context;
             _userManager = userManager;
+            _context = ctx;
         }
 
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
+
         // GET: Orders
-        [Authorize]
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Order.Include(o => o.PaymentType);
+            var currentUser = await GetCurrentUserAsync();
+            var applicationDbContext = _context.Order.Include(o => o.PaymentType).Where(o => o.User == currentUser);
             return View(await applicationDbContext.ToListAsync());
         }
+
+
+        //KC- Get Open order per customerID
+        //by determining in orders table if this customer has an order without paytype -- Paytype ==null 
+        // bind this product to the orderId, placing this entire instance in the orderProduct Table as a line item.
+        public async Task<IActionResult> AddProductToOrder(Product productToAdd)
+        {
+            var currentUser = await GetCurrentUserAsync();
+            int? custOpenOrder = (from order in _context.Order
+                                  where order.PaymentTypeId == null && order.User == currentUser
+                                  select order.OrderId).SingleOrDefault();
+            if (custOpenOrder > 0)
+            {
+                OrderProduct orderProduct = new OrderProduct() {
+                    OrderId = (int)custOpenOrder,
+                    ProductId = productToAdd.ProductId
+                };
+                //kc-getready to add to db
+                _context.Add(orderProduct);
+                //kc- actually add to db
+               
+            } if (custOpenOrder == 0)
+            {
+                Order newOrder = new Order
+                {
+                    DateCreated = DateTime.Now,
+                    User = currentUser
+                };
+                _context.Add(newOrder);
+
+                OrderProduct orderProduct = new OrderProduct()
+                {
+                    OrderId = newOrder.OrderId,
+                    ProductId = productToAdd.ProductId
+                };
+                _context.Add(orderProduct);
+
+            }
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
+        }
+
+
 
         // GET: Orders/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            OrderDetailViewModel currentOrderModel = new OrderDetailViewModel();
+
             if (id == null)
             {
                 return NotFound();
             }
-            OrderDetailViewModel orderDetail = new OrderDetailViewModel();
 
-            var order = await _context.Order
+            currentOrderModel.Order = await _context.Order
                 .Include(o => o.PaymentType)
-                .Include(o => o.OrderProducts)
+                .Include(op => op.OrderProducts)
                 .SingleOrDefaultAsync(m => m.OrderId == id);
-            if (order == null)
+            if (currentOrderModel.Order == null)
             {
                 return NotFound();
             }
 
-            orderDetail.Order = order;
+            foreach (var orderProduct in currentOrderModel.Order.OrderProducts)
+            {
+                var currentProductsInOrder = _context.Product.SingleOrDefault(p => p.ProductId == orderProduct.ProductId);
+                currentOrderModel.Products.Add(currentProductsInOrder);
+            }
 
-            // Ollie - 9/1
-            // Get the products that belong to each order
-            orderDetail.Products = (
-                from p in _context.Product
-                join op in order.OrderProducts
-                on p.ProductId equals op.ProductId
-                where op.OrderId == id
-                select p
-                ).ToList();
-
-            return View(orderDetail);
+            return View(currentOrderModel);
         }
 
         // POST: Orders/Details/5?param=5
@@ -97,7 +138,6 @@ namespace BangazonSite.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("OrderId,PaymentTypeId")] Order order)
         {
@@ -179,11 +219,11 @@ namespace BangazonSite.Controllers
             ModelState.Remove("order.DateCreated");
 
             orderDetail.Order = order;
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    order.DateCompleted = DateTime.Now;
                     _context.Update(order);
                     await _context.SaveChangesAsync();
                     foreach(Product product in orderDetail.Products)
@@ -204,15 +244,15 @@ namespace BangazonSite.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Confirmation",new { id = id});
+                return RedirectToAction("Index");
             }
             ViewData["PaymentTypeId"] = new SelectList(_context.PaymentType, "PaymentTypeId", "AccountNumber", order.PaymentTypeId);
 
             return View(orderDetail);
         }
 
-        // GET: Orders/Confirmation/5
-        public async Task<IActionResult> Confirmation(int? id)
+        // GET: Orders/Delete/5
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
