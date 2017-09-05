@@ -34,11 +34,27 @@ namespace BangazonSite.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
+        // Ollie - 9/5
+        // GET: Orders/Cart
+        public async Task<IActionResult> Cart()
+        {
+            var currentUser = await GetCurrentUserAsync();
+            int? custOpenOrder = (from order in _context.Order
+                                  where order.PaymentTypeId == null && order.User == currentUser
+                                  select order.OrderId).SingleOrDefault();
+            if (custOpenOrder > 0)
+            {
+                return RedirectToAction("Details", new { id = custOpenOrder });
+            }else
+            {
+                return View();
+            }
+        }
 
-        //KC- Get Open order per customerID
-        //by determining in orders table if this customer has an order without paytype -- Paytype ==null 
-        // bind this product to the orderId, placing this entire instance in the orderProduct Table as a line item.
-        public async Task<IActionResult> AddProductToOrder(Product productToAdd)
+            //KC- Get Open order per customerID
+            //by determining in orders table if this customer has an order without paytype -- Paytype ==null 
+            // bind this product to the orderId, placing this entire instance in the orderProduct Table as a line item.
+            public async Task<IActionResult> AddProductToOrder(Product productToAdd)
         {
             var currentUser = await GetCurrentUserAsync();
             int? custOpenOrder = (from order in _context.Order
