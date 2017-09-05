@@ -1,30 +1,28 @@
-@model IEnumerable<BangazonSite.Models.ProductType>
+@model BangazonSite.Models.ProductViewModels.ProductTypesViewModel
 
 @{
     ViewData["Title"] = "Product Types";
 }
+<h2 class="top-buffer">Product Types</h2>
 
-<h2>Product Types</h2>
-
-<table class="table">
-    <thead>
-        <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Label)
-                </th>
-            <th></th>
-        </tr>
-    </thead>
-
-    @foreach (var type in (IEnumerable<object>)ViewBag["types"])
+@foreach (var type in Model.ProductTypes)
+{
+    <div class="row">
+        <div class="col-md-12">
+            <a asp-controller="Products" asp-action="OfType" asp-route-searchString="@type.Label">
+                <h4>@type.Label (@Html.DisplayFor(modelItem => type.Quantity))</h4>
+            </a>
+        </div>
+    </div>
+    foreach (var product in type.Products)
     {
-        @type
-        <div class="row top-buffer">
-            <div class="col-md-8">@type.ProductType</div>
-            <div class="col-md-2">@type.ProductCount</div>
+        <div class="row">
+            <div class="col-md-10">
+                @product.Title
+            </div>
             <div class="col-md-2">
+                @product.Price.ToString("C")
             </div>
         </div>
     }
-
-</table>
+}
