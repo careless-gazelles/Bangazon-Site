@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BangazonSite.Models;
 using BangazonSite.Data;
-using BangazonSite.Models;
 using Microsoft.AspNetCore.Identity;
 
 //Author: Adam 
@@ -156,6 +155,10 @@ namespace BangazonSite.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var paymentType = await _context.PaymentType.SingleOrDefaultAsync(m => m.PaymentTypeId == id);
+            if (paymentType != null)
+            {
+               
+            }
             _context.PaymentType.Remove(paymentType);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
