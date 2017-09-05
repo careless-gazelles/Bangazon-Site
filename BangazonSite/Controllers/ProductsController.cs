@@ -27,12 +27,12 @@ namespace BangazonSite.Controllers
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
         //Logic for searching for products
-        public ViewResult Index(string searchString, bool localSearch)
+        public ViewResult Index(string searchString, bool LocalDelivery)
         {
             var products = from p in _context.Product
                            select p;
 
-            if (localSearch == true)
+            if (LocalDelivery == true)
             {
                 if (!String.IsNullOrEmpty(searchString))
                 {
