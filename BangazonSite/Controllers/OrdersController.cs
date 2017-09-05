@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using BangazonSite.Data;
 using BangazonSite.Models;
 using Microsoft.AspNetCore.Identity;
+using BangazonSite.Models.OrderViewModels;
 
 namespace BangazonSite.Controllers
 {
@@ -28,7 +29,8 @@ namespace BangazonSite.Controllers
         // GET: Orders
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Order.Include(o => o.PaymentType);
+            var currentUser = await GetCurrentUserAsync();
+            var applicationDbContext = _context.Order.Include(o => o.PaymentType).Where(o => o.User == currentUser);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -38,9 +40,9 @@ namespace BangazonSite.Controllers
         // bind this product to the orderId, placing this entire instance in the orderProduct Table as a line item.
         public async Task<IActionResult> AddProductToOrder(Product productToAdd)
         {
-            var currentUser = GetCurrentUserAsync();
+            var currentUser = await GetCurrentUserAsync();
             int? custOpenOrder = (from order in _context.Order
-                                  where order.PaymentTypeId == null && Convert.ToInt32(order.User.Id) == currentUser.Id
+                                  where order.PaymentTypeId == null && order.User == currentUser
                                   select order.OrderId).SingleOrDefault();
             if (custOpenOrder > 0)
             {
@@ -56,7 +58,8 @@ namespace BangazonSite.Controllers
             {
                 Order newOrder = new Order
                 {
-                    User = await currentUser
+                    DateCreated = DateTime.Now,
+                    User = currentUser
                 };
                 _context.Add(newOrder);
 
@@ -79,20 +82,29 @@ namespace BangazonSite.Controllers
         // GET: Orders/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            OrderDetailViewModel currentOrderModel = new OrderDetailViewModel();
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            var order = await _context.Order
+            currentOrderModel.Order = await _context.Order
                 .Include(o => o.PaymentType)
+                .Include(op => op.OrderProducts)
                 .SingleOrDefaultAsync(m => m.OrderId == id);
-            if (order == null)
+            if (currentOrderModel.Order == null)
             {
                 return NotFound();
             }
 
-            return View(order);
+            foreach (var orderProduct in currentOrderModel.Order.OrderProducts)
+            {
+                var currentProductsInOrder = _context.Product.SingleOrDefault(p => p.ProductId == orderProduct.ProductId);
+                currentOrderModel.Products.Add(currentProductsInOrder);
+            }
+
+            return View(currentOrderModel);
         }
 
         // GET: Orders/Create
