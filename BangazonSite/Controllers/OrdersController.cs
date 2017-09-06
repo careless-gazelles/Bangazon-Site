@@ -9,6 +9,7 @@ using BangazonSite.Data;
 using BangazonSite.Models;
 using Microsoft.AspNetCore.Identity;
 using BangazonSite.Models.OrderViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BangazonSite.Controllers
 {
@@ -166,6 +167,7 @@ namespace BangazonSite.Controllers
         }
 
         // GET: Orders/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -179,6 +181,7 @@ namespace BangazonSite.Controllers
                 .Include(o => o.PaymentType)
                 .Include(o => o.OrderProducts)
                 .SingleOrDefaultAsync(m => m.OrderId == id);
+
             if (order == null)
             {
                 return NotFound();
@@ -197,6 +200,7 @@ namespace BangazonSite.Controllers
             ViewData["PaymentTypeId"] = new SelectList(_context.PaymentType, "PaymentTypeId", "AccountNumber", order.PaymentTypeId);
 
             orderDetail.Order = order;
+            var x = order.DateCreated;
             return View(orderDetail);
         }
 
@@ -204,8 +208,9 @@ namespace BangazonSite.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("OrderId,PaymentTypeId")] Order order)
+        public async Task<IActionResult> Edit(int id, [Bind("OrderId,PaymentTypeId,DateCreated")] Order order)
         {
             if (id != order.OrderId)
             {
@@ -227,12 +232,8 @@ namespace BangazonSite.Controllers
 
             // Ollie - 9/1 
             // Apparently the user gets added to the Product object before it's passed here
-            // And the DateCreated was causing issues
             // This removes them, thus making the ModelState valid
             ModelState.Remove("order.User");
-            //ModelState.Remove("order.DateCreated");
-
-            //order.DateCreated = order.DateCreated;
             order.DateCompleted = DateTime.Now;
 
             orderDetail.Order = order;
