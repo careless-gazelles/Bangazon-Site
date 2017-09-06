@@ -16,6 +16,6 @@ namespace BangazonSite.Models
 
         [NotMapped]
         public int Quantity { get; set; }
-        public ICollection<Product> Products;
+        public IEnumerable<Product> Products;
     }
 }

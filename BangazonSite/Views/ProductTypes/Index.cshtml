@@ -1,34 +1,28 @@
-@model IEnumerable<BangazonSite.Models.ProductType>
+@model BangazonSite.Models.ProductViewModels.ProductTypesViewModel
 
 @{
     ViewData["Title"] = "Product Types";
 }
+<h2 class="top-buffer">Product Types</h2>
 
-<h2>Product Types</h2>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Label)
-                </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.ProductTypeId">@Html.DisplayFor(modelItem => item.Label)</a>
-</td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ProductTypeId">Edit</a> |
-                <a asp-action="Delete" asp-route-id="@item.ProductTypeId">Delete</a>
-            </td>
-        </tr>
+@foreach (var type in Model.ProductTypes)
+{
+    <div class="row">
+        <div class="col-md-12">
+            <a asp-controller="Products" asp-action="OfType" asp-route-searchString="@type.Label">
+                <h4>@type.Label (@Html.DisplayFor(modelItem => type.Quantity))</h4>
+            </a>
+        </div>
+    </div>
+    foreach (var product in type.Products)
+    {
+        <div class="row">
+            <div class="col-md-10">
+                @product.Title
+            </div>
+            <div class="col-md-2">
+                @product.Price.ToString("C")
+            </div>
+        </div>
+    }
 }
-    </tbody>
-</table>
