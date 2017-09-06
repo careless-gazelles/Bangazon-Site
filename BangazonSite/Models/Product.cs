@@ -44,6 +44,8 @@ namespace BangazonSite.Models
 
         public string ProductLocation { get; set; }
 
+        public bool LocalDelivery { get; set; }
+
         public string ProductImage { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

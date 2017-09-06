@@ -11,7 +11,9 @@ namespace BangazonSite.Models
         [Key]
         public int PaymentTypeId { get; set; }
 
+
         public PaymentType() {
+
             IsActive = true;
         }
 
