@@ -40,7 +40,6 @@
                 <span asp-validation-for="Product.Quantity" class="text-danger"></span>
             </div>
          </div>
-
             <div class="form-group">
                 <label asp-for="Product.ProductType" class="col-md-2 control-label"></label>
                 <div class="col-md-10">
@@ -57,10 +56,18 @@
                     <span asp-validation-for="@Model.Product.ProductType" class="text-danger" />
                 </div>
             </div>
+        <div class="form-group">
+            <label asp-for="Product.LocalDelivery" class="col-md-2 control-label">Available For Local Delivery?</label>
+            <div class="col-md-10">
+                <input asp-for="Product.LocalDelivery" type="radio" value="false" checked="checked" />No
+                <input id="radioTrue" asp-for="Product.LocalDelivery" type="radio" value="true" />Yes
+                <span asp-validation-for="Product.LocalDelivery" class="text-danger"></span>
+            </div>
+        </div>
             <div class="form-group">
                 <label asp-for="Product.ProductLocation" class="col-md-2 control-label">Location</label>
                 <div class="col-md-10">
-                    <input asp-for="Product.ProductLocation" class="form-control" />
+                    <input asp-for="Product.ProductLocation" class="form-control"/>
                     <span asp-validation-for="Product.ProductLocation" class="text-danger"></span>
                 </div>
             </div>
@@ -82,7 +89,3 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

@@ -37,9 +37,14 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
                     <li><a asp-area="" asp-controller="ProductTypes" asp-action="Index">Product Categories</a></li>
                     <li>
+                    <!-- Search bar by Adam -->
+                    <!-- Here is where the user can search by product name, description, or location. Logic written in ProductsController.cs-->
                     @using (Html.BeginForm())
                     {
                             @Html.TextBox("SearchString")
+                            <p style="display:inline; color:lightgrey">Search by location</p>
+                            <!-- name of the checkbox is LocalDelivery, which is tied to the logic in ProductsController.cs-->
+                            <input asp-area="" asp-controller="Products" asp-action="Index" type="checkbox" value="true" name="LocalDelivery" />
                             <input asp-area="" asp-controller="Products" asp-action="Index" type="submit" value="Search" />
                     }
                     </li>
