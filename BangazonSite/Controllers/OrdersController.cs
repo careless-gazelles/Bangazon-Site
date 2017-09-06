@@ -9,6 +9,7 @@ using BangazonSite.Data;
 using BangazonSite.Models;
 using Microsoft.AspNetCore.Identity;
 using BangazonSite.Models.OrderViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BangazonSite.Controllers
 {
@@ -30,15 +31,31 @@ namespace BangazonSite.Controllers
         public async Task<IActionResult> Index()
         {
             var currentUser = await GetCurrentUserAsync();
-            var applicationDbContext = _context.Order.Include(o => o.PaymentType).Where(o => o.User == currentUser);
+            var applicationDbContext = _context.Order.Include(o => o.PaymentType).Where(o => o.User == currentUser).OrderByDescending(o => o.DateCreated);
             return View(await applicationDbContext.ToListAsync());
         }
 
+        // Ollie - 9/5
+        // GET: Orders/Cart
+        public async Task<IActionResult> Cart()
+        {
+            var currentUser = await GetCurrentUserAsync();
+            int? custOpenOrder = (from order in _context.Order
+                                  where order.PaymentTypeId == null && order.User == currentUser
+                                  select order.OrderId).SingleOrDefault();
+            if (custOpenOrder > 0)
+            {
+                return RedirectToAction("Details", new { id = custOpenOrder });
+            }else
+            {
+                return View();
+            }
+        }
 
-        //KC- Get Open order per customerID
-        //by determining in orders table if this customer has an order without paytype -- Paytype ==null 
-        // bind this product to the orderId, placing this entire instance in the orderProduct Table as a line item.
-        public async Task<IActionResult> AddProductToOrder(Product productToAdd)
+            //KC- Get Open order per customerID
+            //by determining in orders table if this customer has an order without paytype -- Paytype ==null 
+            // bind this product to the orderId, placing this entire instance in the orderProduct Table as a line item.
+            public async Task<IActionResult> AddProductToOrder(Product productToAdd)
         {
             var currentUser = await GetCurrentUserAsync();
             int? custOpenOrder = (from order in _context.Order
@@ -77,8 +94,6 @@ namespace BangazonSite.Controllers
             return RedirectToAction("Index");
         }
 
-
-
         // GET: Orders/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -107,6 +122,26 @@ namespace BangazonSite.Controllers
             return View(currentOrderModel);
         }
 
+        // Ollie 9/5
+        // Delete Product from cart
+        // Id = OrderId
+        // Param = ProductId
+        // POST: Orders/Details/5?param=5
+        [HttpPost, ActionName("Details")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteProductConfirmed(int id, int param)
+        {
+            List<OrderProduct> orderProducts = await _context.OrderProduct.Where(x => x.OrderId == id && x.ProductId == param).ToListAsync();
+
+            foreach (var op in orderProducts)
+            {
+                _context.OrderProduct.Remove(op);
+            }
+            
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Details", new { id = id });
+        }
+
         // GET: Orders/Create
         public IActionResult Create()
         {
@@ -132,6 +167,7 @@ namespace BangazonSite.Controllers
         }
 
         // GET: Orders/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -145,6 +181,7 @@ namespace BangazonSite.Controllers
                 .Include(o => o.PaymentType)
                 .Include(o => o.OrderProducts)
                 .SingleOrDefaultAsync(m => m.OrderId == id);
+
             if (order == null)
             {
                 return NotFound();
@@ -163,6 +200,7 @@ namespace BangazonSite.Controllers
             ViewData["PaymentTypeId"] = new SelectList(_context.PaymentType, "PaymentTypeId", "AccountNumber", order.PaymentTypeId);
 
             orderDetail.Order = order;
+            var x = order.DateCreated;
             return View(orderDetail);
         }
 
@@ -170,8 +208,9 @@ namespace BangazonSite.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("OrderId,PaymentTypeId")] Order order)
+        public async Task<IActionResult> Edit(int id, [Bind("OrderId,PaymentTypeId,DateCreated")] Order order)
         {
             if (id != order.OrderId)
             {
@@ -193,10 +232,9 @@ namespace BangazonSite.Controllers
 
             // Ollie - 9/1 
             // Apparently the user gets added to the Product object before it's passed here
-            // And the DateCreated was causing issues
             // This removes them, thus making the ModelState valid
             ModelState.Remove("order.User");
-            ModelState.Remove("order.DateCreated");
+            order.DateCompleted = DateTime.Now;
 
             orderDetail.Order = order;
 
@@ -284,6 +322,40 @@ namespace BangazonSite.Controllers
             _context.Order.Remove(order);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
+        }
+
+        // GET: Orders/DeleteProduct/5?param=5
+        public async Task<IActionResult> DeleteProduct(int? id, int? param)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            OrderDetailViewModel orderDetail = new OrderDetailViewModel();
+
+            var order = await _context.Order
+                .Include(o => o.PaymentType)
+                .Include(o => o.OrderProducts)
+                .SingleOrDefaultAsync(m => m.OrderId == id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            orderDetail.Order = order;
+
+            // Ollie - 9/1
+            // Get the products that belong to each order
+            orderDetail.Products = (
+                from p in _context.Product
+                join op in order.OrderProducts
+                on p.ProductId equals op.ProductId
+                where op.OrderId == id && p.ProductId == param
+                select p
+                ).ToList();
+
+            return View(orderDetail);
         }
 
         private bool OrderExists(int id)
